@@ -4,6 +4,7 @@ import 'package:chat_flutter/services/auth.dart';
 import 'package:chat_flutter/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -15,6 +16,10 @@ class _ProfileState extends State<Profile> {
   int level = 0;
   final AuthService _auth = AuthService();
   UserData userdata;
+  DateTime datetime;
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
+  String dateWithT;
+  String formattedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +30,9 @@ class _ProfileState extends State<Profile> {
       stream: DatabaseService(uid: user.uid).userData,
       builder: (context, snapshot) {
         userdata = snapshot.data;
+        dateWithT = userdata.datebirth.substring(0, 8) + 'T' + userdata.datebirth.substring(8);
+        datetime = DateTime.parse(userdata.datebirth);
+        formattedDate = formatter.format(datetime);
         return Scaffold(
           backgroundColor: Colors.amber[50],
           appBar: AppBar(
@@ -78,6 +86,23 @@ class _ProfileState extends State<Profile> {
                 SizedBox(height: 10,),
                 Text(
                   userdata.name,
+                  style: TextStyle(
+                    color: Colors.deepOrange,
+                    letterSpacing: 2,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Birth Date',
+                  style: TextStyle(
+                    color: Colors.purple,
+                    letterSpacing: 2,
+                  ),
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  formattedDate,
                   style: TextStyle(
                     color: Colors.deepOrange,
                     letterSpacing: 2,

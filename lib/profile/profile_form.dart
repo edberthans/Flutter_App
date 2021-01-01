@@ -8,6 +8,7 @@ import 'package:chat_flutter/shared/imageCapture.dart';
 import 'package:chat_flutter/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProfileForm extends StatefulWidget {
@@ -27,6 +28,8 @@ class _ProfileFormState extends State<ProfileForm> {
   String pic;
   DateTime datetime;
   String isoDate;
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
+  String formattedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,8 @@ class _ProfileFormState extends State<ProfileForm> {
       builder: (context, snapshot) {
         if (snapshot.hasData){
           userdata = snapshot.data;
+          datetime = DateTime.parse(userdata.datebirth);
+          formattedDate = formatter.format(datetime);
           return Scaffold(
             backgroundColor: Colors.amber[50],
             appBar: AppBar(
@@ -87,6 +92,14 @@ class _ProfileFormState extends State<ProfileForm> {
                       },
                       child: CircleAvatar(
                         // backgroundImage: AssetImage('assets/1.jpg'),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 7, 0, 0),
+                          child: Text('Change Profile Picture',
+                            style: TextStyle(
+                              color: Colors.white30
+                            ),
+                          ),
+                        ),
                         backgroundImage: NetworkImage(userdata.picture),
                         radius: 40,
                       ),
@@ -105,6 +118,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   ),
                   SizedBox(height: 10,),
                   TextFormField(
+                    initialValue: userdata.name,
                     decoration: formInputDecoration.copyWith(hintText: 'Full Name'),
                     onChanged: (nameval) {
                       _name = nameval;
@@ -119,37 +133,47 @@ class _ProfileFormState extends State<ProfileForm> {
                     ),
                   ),
                   SizedBox(height: 10,),
-                  Column(
-                    children: [
-                      ListTile(
-                        title: const Text('male'),
-                        leading: Radio(
-                          value: Gender.male,
-                          groupValue: _character,
-                          onChanged: (Gender value) {
-                            setState(() {
-                              _character = value;
-                              gender = 'male';
-                            });
-                          },
-                        ),
-                      ),
-                      ListTile(
-                        title: const Text('female'),
-                        leading: Radio(
-                          value: Gender.female,
-                          groupValue: _character,
-                          onChanged: (Gender value) {
-                            setState(() {
-                              _character = value;
-                              gender = 'female';
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                  Text(
+                    userdata.gender,
+                    style: TextStyle(
+                      color: Colors.deepOrange,
+                      letterSpacing: 2,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  // Column(
+                  //   children: [
+                  //     ListTile(
+                  //       title: const Text('male'),
+                  //       leading: Radio(
+                  //         value: Gender.male,
+                  //         groupValue: _character,
+                  //         onChanged: (Gender value) {
+                  //           setState(() {
+                  //             _character = value;
+                  //             gender = 'male';
+                  //           });
+                  //         },
+                  //       ),
+                  //     ),
+                  //     ListTile(
+                  //       title: const Text('female'),
+                  //       leading: Radio(
+                  //         value: Gender.female,
+                  //         groupValue: _character,
+                  //         onChanged: (Gender value) {
+                  //           setState(() {
+                  //             _character = value;
+                  //             gender = 'female';
+                  //           });
+                  //         },
+                  //       ),
+                  //     ),
+                  //     SizedBox(height: 20),
+                  //   ],
+                  // ),
+                  SizedBox(height: 20),
                   Text(
                     'Birth Date',
                     style: TextStyle(
@@ -157,26 +181,29 @@ class _ProfileFormState extends State<ProfileForm> {
                       letterSpacing: 2,
                     ),
                   ),
+                  SizedBox(height: 10,),
                   Text(
-                    datetime == null ? '': datetime.toString(),
+                    formattedDate == null ? '': formattedDate,
                     style: TextStyle(
-                      color: Colors.purple,
+                      color: Colors.deepOrange,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                       letterSpacing: 2,
                     ),
                   ),
-                  Expanded(
-                                      child: RaisedButton(
-                      child: Text('Pick a date'),
-                      onPressed: () {
-                        showDatePicker(context: context, initialDate: userdata.datebirth == null ? DateTime.now(): DateTime(2004), firstDate: DateTime(1960), lastDate: DateTime.now()).then((value) {
-                          setState(() {
-                            datetime = value;
-                            isoDate = datetime.toIso8601String();
-                          });
-                        } );
-                      },
-                    ),
-                  )
+                  // SingleChildScrollView(
+                  //   child: RaisedButton(
+                  //     child: Text('Pick a date'),
+                  //     onPressed: () {
+                  //       showDatePicker(context: context, initialDate: datetime, firstDate: DateTime(1960), lastDate: DateTime.now()).then((value) {
+                  //         setState(() {
+                  //           datetime = value;
+                  //           isoDate = datetime.toIso8601String();
+                  //         });
+                  //       } );
+                  //     },
+                  //   ),
+                  // )
                 ],
               ),
             ),

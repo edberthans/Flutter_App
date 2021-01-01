@@ -1,6 +1,8 @@
 import 'package:chat_flutter/models/user.dart';
 import 'package:chat_flutter/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 
 class AuthService {
 
@@ -49,7 +51,7 @@ class AuthService {
       FirebaseUser user = result.user;
 
       // //create a document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData('aaa', '', '', '', '');
+      await DatabaseService(uid: user.uid).updateUserData('', '', '', '', '');
 
       return _usersFromFirebaseUser(user);
 

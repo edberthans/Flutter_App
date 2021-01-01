@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:chat_flutter/models/chats.dart';
+import 'package:chat_flutter/shared/bottomnavbar.dart';
 import 'package:chat_flutter/screens/home/chat_list.dart';
 import 'package:chat_flutter/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +48,7 @@ class Home extends StatelessWidget {
             )
           ],
         ),
+        bottomNavigationBar: BottomNavBar(),
         body: ChatList(),
         backgroundColor: Colors.lightBlue,
       ),

@@ -1,6 +1,7 @@
 import 'package:chat_flutter/profile/profile_form.dart';
 import 'package:chat_flutter/screens/authenticate/sign_in.dart';
 import 'package:chat_flutter/screens/authenticate/authenticate.dart';
+import 'package:chat_flutter/screens/home/home_page.dart';
 import 'package:chat_flutter/services/auth.dart';
 import 'package:chat_flutter/shared/constants.dart';
 import 'package:chat_flutter/shared/loading.dart';

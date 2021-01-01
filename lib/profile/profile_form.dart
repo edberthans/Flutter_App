@@ -1,8 +1,10 @@
 import 'package:chat_flutter/models/user.dart';
 import 'package:chat_flutter/screens/home/home.dart';
+import 'package:chat_flutter/screens/home/home_page.dart';
 import 'package:chat_flutter/services/auth.dart';
 import 'package:chat_flutter/services/database.dart';
 import 'package:chat_flutter/shared/constants.dart';
+import 'package:chat_flutter/shared/imageCapture.dart';
 import 'package:chat_flutter/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,10 @@ class _ProfileFormState extends State<ProfileForm> {
   String gender = 'male';
   int level = 0;
   Gender _character = Gender.male;
+  UserData userdata;
+  String pic;
+  DateTime datetime;
+  String isoDate;
 
   @override
   Widget build(BuildContext context) {
@@ -31,38 +37,37 @@ class _ProfileFormState extends State<ProfileForm> {
       stream: DatabaseService(uid: user.uid).userData,
       builder: (context, snapshot) {
         if (snapshot.hasData){
-
-          UserData userdata = snapshot.data;
-          
+          userdata = snapshot.data;
           return Scaffold(
             backgroundColor: Colors.amber[50],
             appBar: AppBar(
               // image: Image(image: NetworkImage('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg'),)
-              title: Text('Chat Flutter'),
+              title: Text('Kencan'),
               centerTitle: true,
               backgroundColor: Colors.cyanAccent[700],
               elevation: 0,
                 actions: [
-                  FlatButton.icon(
-                    icon: Icon(Icons.person),
-                    label: Text(
-                      'Logout'
-                    ),
-                    onPressed: () async {
-                      await _auth.signOut();
-                    },
-                  )
+                  // FlatButton.icon(
+                  //   icon: Icon(Icons.person),
+                  //   label: Text(
+                  //     'Logout'
+                  //   ),
+                  //   onPressed: () async {
+                  //     await _auth.signOut();
+                  //   },
+                  // )
                 ],
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 await DatabaseService(uid: user.uid).updateUserData(
-                  _name,
+                  _name ?? userdata.name,
+                  userdata.picture,
                   '',
-                  '',
-                  '',
+                  isoDate ?? userdata.datebirth,
                   gender,
                 );
+                return HomePage();
               },
               child: Icon(Icons.navigate_next),
               backgroundColor: Colors.pink,
@@ -73,9 +78,18 @@ class _ProfileFormState extends State<ProfileForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage('assets/1.jpg'),
-                      radius: 40,
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ImageCapture()),
+                        );
+                      },
+                      child: CircleAvatar(
+                        // backgroundImage: AssetImage('assets/1.jpg'),
+                        backgroundImage: NetworkImage(userdata.picture),
+                        radius: 40,
+                      ),
                     ),
                   ),
                   Divider(
@@ -134,55 +148,35 @@ class _ProfileFormState extends State<ProfileForm> {
                         ),
                       ),
                       SizedBox(height: 20),
-              // RaisedButton(
-              //   onPressed: () async {
-              //     await DatabaseService(uid: user.uid).updateUserData(
-              //       _name ?? userdata.name,
-              //       '',
-              //       '',
-              //       '',
-              //       _character ?? userdata.gender,
-              //     );
-              //     print(_character);
-              //     return Home();
-              //   },
-              //   color: Colors.teal,
-              //   child: Text(
-              //     'Update',
-              //     style: TextStyle(
-              //       color: Colors.purpleAccent,
-              //     ),
-              //   ),
-              // ),
                     ],
                   ),
-                  // Text(
-                  //   '$level',
-                  //   style: TextStyle(
-                  //     color: Colors.deepOrange,
-                  //     letterSpacing: 2,
-                  //     fontSize: 28,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 30,),
-                  // Row(
-                  //   children: [
-                  //     Icon(
-                  //       Icons.email,
-                  //       color: Colors.grey,
-                  //     ),
-                  //     SizedBox(width: 10,),
-                  //     Text(
-                  //       'hans@gmail.com',
-                  //       style: TextStyle(
-                  //         color: Colors.brown,
-                  //         fontSize: 18,
-                  //         letterSpacing: 2,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Text(
+                    'Birth Date',
+                    style: TextStyle(
+                      color: Colors.purple,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  Text(
+                    datetime == null ? '': datetime.toString(),
+                    style: TextStyle(
+                      color: Colors.purple,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  Expanded(
+                                      child: RaisedButton(
+                      child: Text('Pick a date'),
+                      onPressed: () {
+                        showDatePicker(context: context, initialDate: userdata.datebirth == null ? DateTime.now(): DateTime(2004), firstDate: DateTime(1960), lastDate: DateTime.now()).then((value) {
+                          setState(() {
+                            datetime = value;
+                            isoDate = datetime.toIso8601String();
+                          });
+                        } );
+                      },
+                    ),
+                  )
                 ],
               ),
             ),

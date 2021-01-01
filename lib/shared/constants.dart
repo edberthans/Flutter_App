@@ -5,7 +5,7 @@ const textInputDecoration = InputDecoration(
   filled: true,
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-      color: Colors.amberAccent,
+      color: Colors.blueAccent,
       width: 1,
     ),
   ),

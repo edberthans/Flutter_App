@@ -41,9 +41,13 @@ class _ProfileFormState extends State<ProfileForm> {
       builder: (context, snapshot) {
         if (snapshot.hasData){
           userdata = snapshot.data;
-          datetime = DateTime.parse(userdata.datebirth);
-          formattedDate = formatter.format(datetime);
+          if(userdata.datebirth != ''){
+            datetime = DateTime.parse(userdata.datebirth);
+            formattedDate = formatter.format(datetime);
+          }
+         
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.amber[50],
             appBar: AppBar(
               // image: Image(image: NetworkImage('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg'),)
@@ -77,134 +81,133 @@ class _ProfileFormState extends State<ProfileForm> {
               child: Icon(Icons.navigate_next),
               backgroundColor: Colors.pink,
             ),
-            body: Padding(
-              padding: EdgeInsets.fromLTRB(30, 40, 30, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ImageCapture()),
-                        );
-                      },
-                      child: CircleAvatar(
-                        // backgroundImage: AssetImage('assets/1.jpg'),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 7, 0, 0),
-                          child: Text('Change Profile Picture',
-                            style: TextStyle(
-                              color: Colors.white30
+            body: SingleChildScrollView(
+                          child: Padding(
+                padding: EdgeInsets.fromLTRB(30, 40, 30, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ImageCapture()),
+                          );
+                        },
+                        child: CircleAvatar(
+                          // backgroundImage: AssetImage('assets/1.jpg'),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 7, 0, 0),
+                            child: Text('Change Profile Picture',
+                              style: TextStyle(
+                                color: Colors.white30
+                              ),
                             ),
                           ),
+                          backgroundImage: NetworkImage(userdata.picture),
+                          radius: 40,
                         ),
-                        backgroundImage: NetworkImage(userdata.picture),
-                        radius: 40,
                       ),
                     ),
-                  ),
-                  Divider(
-                    height: 60,
-                    color: Colors.cyanAccent[700],
-                  ),
-                  Text(
-                    'Name',
-                    style: TextStyle(
-                      color: Colors.purple,
-                      letterSpacing: 2,
+                    Divider(
+                      height: 60,
+                      color: Colors.cyanAccent[700],
                     ),
-                  ),
-                  SizedBox(height: 10,),
-                  TextFormField(
-                    initialValue: userdata.name,
-                    decoration: formInputDecoration.copyWith(hintText: 'Full Name'),
-                    onChanged: (nameval) {
-                      _name = nameval;
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  Text(
-                    'Gender',
-                    style: TextStyle(
-                      color: Colors.purple,
-                      letterSpacing: 2,
+                    Text(
+                      'Name',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        letterSpacing: 2,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10,),
-                  Text(
-                    userdata.gender,
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      letterSpacing: 2,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(height: 10,),
+                    TextFormField(
+                      initialValue: userdata.name,
+                      decoration: formInputDecoration.copyWith(hintText: 'Full Name'),
+                      onChanged: (nameval) {
+                        _name = nameval;
+                      },
                     ),
-                  ),
-                  // Column(
-                  //   children: [
-                  //     ListTile(
-                  //       title: const Text('male'),
-                  //       leading: Radio(
-                  //         value: Gender.male,
-                  //         groupValue: _character,
-                  //         onChanged: (Gender value) {
-                  //           setState(() {
-                  //             _character = value;
-                  //             gender = 'male';
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //     ListTile(
-                  //       title: const Text('female'),
-                  //       leading: Radio(
-                  //         value: Gender.female,
-                  //         groupValue: _character,
-                  //         onChanged: (Gender value) {
-                  //           setState(() {
-                  //             _character = value;
-                  //             gender = 'female';
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //     SizedBox(height: 20),
-                  //   ],
-                  // ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Birth Date',
-                    style: TextStyle(
-                      color: Colors.purple,
-                      letterSpacing: 2,
+                    SizedBox(height: 20,),
+                    Text(
+                      'Gender',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        letterSpacing: 2,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10,),
-                  Text(
-                    formattedDate == null ? '': formattedDate,
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+                    SizedBox(height: 10,),
+                    Text(
+                      userdata.gender ?? gender,
+                      style: TextStyle(
+                        color: Colors.deepOrange,
+                        letterSpacing: 2,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  // SingleChildScrollView(
-                  //   child: RaisedButton(
-                  //     child: Text('Pick a date'),
-                  //     onPressed: () {
-                  //       showDatePicker(context: context, initialDate: datetime, firstDate: DateTime(1960), lastDate: DateTime.now()).then((value) {
-                  //         setState(() {
-                  //           datetime = value;
-                  //           isoDate = datetime.toIso8601String();
-                  //         });
-                  //       } );
-                  //     },
-                  //   ),
-                  // )
-                ],
+                    Column(
+                      children: [
+                        ListTile(
+                          title: const Text('male'),
+                          leading: Radio(
+                            value: Gender.male,
+                            groupValue: _character,
+                            onChanged: (Gender value) {
+                              setState(() {
+                                _character = value;
+                                gender = 'male';
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text('female'),
+                          leading: Radio(
+                            value: Gender.female,
+                            groupValue: _character,
+                            onChanged: (Gender value) {
+                              setState(() {
+                                _character = value;
+                                gender = 'female';
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Birth Date',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    SizedBox(height: 5,),
+                    Text(
+                      formattedDate == null ? '': formattedDate,
+                      style: TextStyle(
+                        color: Colors.deepOrange,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      child: RaisedButton(
+                        child: Text('Pick a date'),
+                        onPressed: () {
+                          showDatePicker(context: context, initialDate: datetime ?? DateTime(2004), firstDate: DateTime(1960), lastDate: DateTime.now()).then((value) {
+                            setState(() {
+                              datetime = value;
+                              isoDate = datetime.toIso8601String();
+                            });
+                          } );
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );

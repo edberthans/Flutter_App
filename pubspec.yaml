@@ -38,6 +38,8 @@ dependencies:
   image_cropper: 1.0.2
   image_picker: 0.6.0+17
   intl: ^0.16.1
+  flutter_number_picker:
+      git: https://github.com/phuongtinhbien/flutter_number_picker.git
 
 dev_dependencies:
   flutter_test:

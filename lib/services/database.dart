@@ -1,5 +1,6 @@
 import 'package:chat_flutter/models/chats.dart';
-import 'package:chat_flutter/models/femaleList.dart';
+import 'package:chat_flutter/models/jasaList.dart';
+import 'package:chat_flutter/models/jasaUser.dart';
 import 'package:chat_flutter/models/user.dart';
 import 'package:chat_flutter/shared/imageCapture.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,26 +13,30 @@ class DatabaseService {
 
   //collection reference
   final CollectionReference chatCollection = Firestore.instance.collection('user');
-  final CollectionReference femaleCollection = Firestore.instance.collection('female');
+  final CollectionReference jasaCollection = Firestore.instance.collection('jasa');
 
-  Future updateUserData(String name, String picture, String phone, String datebirth, String gender) async {
+  Future updateUserData(String name, String picture, String phone, String datebirth, String gender, bool verifiedDocument, String docUrl) async {
     return await chatCollection.document(uid).setData({
       'name': name,
       'picture': picture,
       'phone': phone,
       'datebirth': datebirth,
       'gender': gender,
+      'verifiedDocument' : verifiedDocument,
+      'docUrl' : docUrl,
+
     });
   }
 
-  Future updateFemaleData(String name, String picture, String phone, int rating, String datebirth, String gender) async {
-    return await femaleCollection.document(uid).setData({
-      'femaleName': name,
-      'femaleimage': picture,
-      'phone': phone,
-      'rating': rating,
-      'datebirth': datebirth,
-      'gender': gender,
+  Future updateJasaData(String gender, List<String> pictures, String description, String notes, String languages, int height, List<String> preferences) async {
+    return await jasaCollection.document(uid).setData({
+      'jasaGender': gender,
+      'jasaPictures': pictures,
+      'jasaDescription': description,
+      'jasaNotes': notes,
+      'jasaLanguages': languages,
+      'jasaHeight': height,
+      'jasaPreferences': preferences
     });
   }
 
@@ -46,14 +51,16 @@ class DatabaseService {
     )).toList();
   }
 
-  //female list from snapshots
-  List<femaleList> _femaleListFromSnapshot(QuerySnapshot snapshot){
-    return snapshot.documents.map((doc) => femaleList(
-      femaleimage: doc.data['femaleimage'] ?? '',
-      femaleName: doc.data['femaleName'] ?? '',
-      dateofbirth: doc.data['dateofbirth'] ?? '',
-      rating: doc.data['rating'] ?? '',
-      gender: doc.data['gender'] ?? '',
+  //jasa list from snapshots
+  List<JasaList> _jasaListFromSnapshot(QuerySnapshot snapshot){
+    return snapshot.documents.map((doc) => JasaList(
+      gender: doc.data['jasaGender'] ?? '',
+      pictures: doc.data['jasaPictures'] ?? '',
+      description: doc.data['jasaDescription'] ?? '',
+      notes: doc.data['jasaNotes'] ?? '',
+      languages: doc.data['jasaLanguanges'] ?? '',
+      height: doc.data['jasaHeight'] ?? 0,
+      preferences: doc.data['jasaPreferences'] ?? '',
     )).toList();
   }
 
@@ -66,6 +73,21 @@ class DatabaseService {
       name: snapshot.data['name'] ?? '',
       picture: snapshot.data['picture'] ?? '',
       gender: snapshot.data['gender'] ?? '',
+      verifiedDocument: snapshot.data['verifiedDocument'],
+      docUrl: snapshot.data['docUrl'] ?? '',
+    );
+  }
+
+  //jasa user data from snapshot
+  JasaUserData _jasauserDataFromSnapshot(DocumentSnapshot snapshot){
+    return JasaUserData(
+      gender: snapshot.data['jasaGender'] ?? '',
+      pictures: snapshot.data['jasaPictures'] ?? '',
+      description: snapshot.data['jasaDescription'] ?? '',
+      notes: snapshot.data['jasaNotes'] ?? '',
+      languages: snapshot.data['jasaLanguanges'] ?? '',
+      height: snapshot.data['jasaHeight'] ?? 0,
+      preferences: snapshot.data['jasaPreferences'] ?? '',
     );
   }
 
@@ -75,16 +97,22 @@ class DatabaseService {
       .map(_chatsListFromSnapshot);
   }
 
-  //get female list
-  Stream<List<femaleList>> get female {
-    return chatCollection.snapshots()
-      .map(_femaleListFromSnapshot);
+  //get jasa list
+  Stream<List<JasaList>> get jasaLists {
+    return jasaCollection.snapshots()
+      .map(_jasaListFromSnapshot);
   }
 
   //get user doc stream
   Stream<UserData> get userData{
     return chatCollection.document(uid).snapshots()
       .map(_userDataFromSnapshot);
+  }
+
+  //get jasa user doc stream
+  Stream<JasaUserData> get jasauserData{
+    return chatCollection.document(uid).snapshots()
+      .map(_jasauserDataFromSnapshot);
   }
 
 }

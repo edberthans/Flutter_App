@@ -104,6 +104,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_number_picker:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "3a1171efca885a7e38b63c78710ba16eae28c93a"
+      url: "https://github.com/phuongtinhbien/flutter_number_picker.git"
+    source: git
+    version: "0.0.8"
   flutter_spinkit:
     dependency: "direct main"
     description:

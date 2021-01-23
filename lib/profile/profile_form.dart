@@ -75,6 +75,8 @@ class _ProfileFormState extends State<ProfileForm> {
                   '',
                   isoDate ?? userdata.datebirth,
                   gender,
+                  userdata.verifiedDocument,
+                  userdata.docUrl,
                 );
                 return HomePage();
               },

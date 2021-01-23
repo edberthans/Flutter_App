@@ -16,6 +16,8 @@ class UserData {
   final String gender;
   final String phone;
   final String picture;
+  final bool verifiedDocument;
+  final String docUrl;
 
   UserData({
     this.uid,
@@ -24,6 +26,8 @@ class UserData {
     this.gender,
     this.phone,
     this.picture,
+    this.verifiedDocument,
+    this.docUrl,
 
   });
 

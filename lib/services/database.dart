@@ -28,15 +28,21 @@ class DatabaseService {
     });
   }
 
-  Future updateJasaData(String gender, List<String> pictures, String description, String notes, String languages, int height, List<String> preferences) async {
+  Future updateJasaData(String gender, String description, String notes, String languages, int height, List<String> preferences) async {
     return await jasaCollection.document(uid).setData({
       'jasaGender': gender,
-      'jasaPictures': pictures,
       'jasaDescription': description,
       'jasaNotes': notes,
       'jasaLanguages': languages,
       'jasaHeight': height,
       'jasaPreferences': preferences
+    });
+  }
+
+  Future updateJasaImagesData(List<String> pictures) async {
+    print('uploading jasa image' + pictures[0]);
+    return await jasaCollection.document(uid).setData({
+      'jasaPictures': pictures,
     });
   }
 
@@ -82,7 +88,7 @@ class DatabaseService {
   JasaUserData _jasauserDataFromSnapshot(DocumentSnapshot snapshot){
     return JasaUserData(
       gender: snapshot.data['jasaGender'] ?? '',
-      pictures: snapshot.data['jasaPictures'] ?? '',
+      pictures: snapshot.data['jasaPictures'] ?? [],
       description: snapshot.data['jasaDescription'] ?? '',
       notes: snapshot.data['jasaNotes'] ?? '',
       languages: snapshot.data['jasaLanguanges'] ?? '',
@@ -111,7 +117,7 @@ class DatabaseService {
 
   //get jasa user doc stream
   Stream<JasaUserData> get jasauserData{
-    return chatCollection.document(uid).snapshots()
+    return jasaCollection.document(uid).snapshots()
       .map(_jasauserDataFromSnapshot);
   }
 

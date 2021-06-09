@@ -1,8 +1,12 @@
+import 'package:chat_flutter/data.dart';
+import 'package:chat_flutter/models/chatUser.dart';
 import 'package:chat_flutter/models/chats.dart';
 import 'package:chat_flutter/models/jasaList.dart';
 import 'package:chat_flutter/models/jasaUser.dart';
+import 'package:chat_flutter/models/message.dart';
 import 'package:chat_flutter/models/user.dart';
 import 'package:chat_flutter/shared/imageCapture.dart';
+import 'package:chat_flutter/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -45,6 +49,32 @@ class DatabaseService {
       'jasaPictures': pictures,
     });
   }
+
+  static Future uploadMessage(String idUser, String message) async {
+    final refMessages =
+        Firestore.instance.collection('chats/$idUser/messages');
+
+    final newMessage = Message(
+      idUser: idUser,
+      urlAvatar: myUrlAvatar,
+      username: myUsername,
+      message: message,
+      createdAt: DateTime.now(),
+    );
+    await refMessages.add(newMessage.toJson());
+
+    final refUsers = Firestore.instance.collection('chats');
+    await refUsers
+      .document(idUser)
+      .updateData({UserField.lastMessageTime: DateTime.now()});
+  }
+
+  static Stream<List<Message>> getMessages(String idUser) =>
+      Firestore.instance
+          .collection('chats/$idUser/messages')
+          .orderBy(MessageField.createdAt, descending: true)
+          .snapshots()
+          .transform(Utils.transformer(Message.fromJson));
 
   //chats list from snapshots
   List<Chats> _chatsListFromSnapshot(QuerySnapshot snapshot){
@@ -121,4 +151,10 @@ class DatabaseService {
       .map(_jasauserDataFromSnapshot);
   }
 
+  //
+  static Stream<List<chatUser>> getUsers() => Firestore.instance
+      .collection('chats')
+      .orderBy(UserField.lastMessageTime, descending: true)
+      .snapshots()
+      .transform(Utils.transformer(chatUser.fromJson));
 }
